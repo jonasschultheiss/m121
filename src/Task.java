@@ -6,18 +6,22 @@ import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3UltrasonicSensor; 
 import lejos.robotics.SampleProvider;
 
-public class Task301 {
+public class Task {
 
 	private float DEFAULT_DISTANCE = 10;
-	private float MIN_DISTANCE = 1;
-	private float MAX_DISTANCE = 50;
+	private float MIN_DISTANCE;
+	private float MAX_DISTANCE;
 
 	private float wantedDistance;
 	private float currentDistance;
 
-	public Task301() {
-		// constructor
-		// idk do something if necessary
+	private Display display;
+	
+	public Task() {
+		display = new Display();
+		DEFAULT_DISTANCE = 10;
+		MIN_DISTANCE = 1;
+		MAX_DISTANCE = 50;
 	}
 	
 	private void IncrementDistance () {

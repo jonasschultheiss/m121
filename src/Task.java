@@ -18,6 +18,8 @@ public class Task {
 	
 	public static boolean isUserDone;
 	
+	private EV3UltrasonicSensor ultra;
+	
 	public Task() {
 		this.settings = new Settings();
 		this.display = new Display(this.settings);
@@ -31,6 +33,8 @@ public class Task {
 	}
 	
 	private void DoStuff() {
+		this.display.ClearScreen();
+		this.display.ShowWorking();
 		if (this.settings.getMode() == 0) {
 			ModeZero();
 		} else {
@@ -47,12 +51,12 @@ public class Task {
 			}
 
 			@Override
-			public void keyReleased(Key k) {}
+			public void keyReleased(Key k) {
+			}
 		});
 		
 		CreateMovePilot();
-		EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
-		ultra.enable();
+		this.ultra.enable();
 		
 		do {
 			float currentDistance = GetCurrentDistance(ultra);
@@ -60,14 +64,18 @@ public class Task {
 			if (Math.signum(difference) == 1.0f) {
 				if (AreCriteriasMet(difference)) {
 					this.pilot.Stop();
+					Button.LEDPattern(1);
 					
 				} else {
 					this.pilot.Forwards();
+					Button.LEDPattern(2);
 				}
 			} else {
 				if (AreCriteriasMet(difference)) {
 					this.pilot.Stop();
+					Button.LEDPattern(1);
 				} else {
+					Button.LEDPattern(2);
 					this.pilot.Backwards();
 				}
 			}
@@ -75,29 +83,32 @@ public class Task {
 		} while (!isUserDone);
 		
 		this.pilot.Stop();
-		ultra.close();
+		this.ultra.close();
 	
 	}
 	
 	private void ModeOne () {
 		CreateMovePilot();
 		boolean isGoalAnchieved = false;
-		EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
-		ultra.enable();
+		this.ultra.enable();
 		
 		do {
 			float currentDistance = GetCurrentDistance(ultra);
 			float difference = this.settings.getWantedDistance() - currentDistance;
 			if (Math.signum(difference) == 1.0f) {
 				if (AreCriteriasMet(difference)) {
+					Button.LEDPattern(1);
 					isGoalAnchieved = true;
 				} else {
+					Button.LEDPattern(2);
 					this.pilot.Forwards();
 				}
 			} else {
 				if (AreCriteriasMet(difference)) {
+					Button.LEDPattern(1);
 					isGoalAnchieved = true;
 				} else {
+					Button.LEDPattern(2);
 					this.pilot.Backwards();
 				}
 			}
@@ -105,7 +116,7 @@ public class Task {
 		} while (!isGoalAnchieved);
 		
 		this.pilot.Stop();
-		ultra.close();
+		this.ultra.close();
 	}
 	
 	private boolean AreCriteriasMet(float difference) {
@@ -120,7 +131,7 @@ public class Task {
 		}
 	}
 	
-	private float GetCurrentDistance(EV3UltrasonicSensor ultra) {
+	float GetCurrentDistance(EV3UltrasonicSensor ultra) {
 		SampleProvider sample = ultra.getDistanceMode();
 		float[] a = new float[1]; 
 		sample.fetchSample(a, 0); 
@@ -135,7 +146,7 @@ public class Task {
 		this.display.ShowStartup();
 		Button.LEDPattern(1);
 		PlayStartHymn(settings.getVolume());
-		// Sleep();
+		this.ultra = new EV3UltrasonicSensor(SensorPort.S4);
 		GetUserInput();
 	}
 	
@@ -350,41 +361,4 @@ public class Task {
 		Sound.setVolume(volume);
 		Sound.beepSequence();
 	}
-
-/*
- * private int GetUserInput() { this.wantedDistance = DEFAULT_DISTANCE;
- * DisplayWantedDistance(); boolean isInputConfirmed = false;
- * 
- * while (isInputConfirmed == false) { switch (Button.waitForAnyPress()) { case
- * Button.ID_DOWN: { DecrementDistance(); break; } case Button.ID_LEFT: {
- * DecrementDistance(); break; } case Button.ID_UP: { IncrementDistance();
- * break; } case Button.ID_RIGHT: { IncrementDistance(); break; } case
- * Button.ID_ENTER: { isInputConfirmed = true; break; }
- * 
- * }
- * 
- * DisplayWantedDistance(); }
- * 
- * return 0; }
- * 
- * private void DriveSaidDistance () { boolean isUserDone = false;
- * EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
- * ultra.enable(); Motor.B.setSpeed(100); Motor.C.setSpeed(100); while
- * (isUserDone == false) { SampleProvider sample = ultra.getDistanceMode();
- * float[] a = new float[99]; sample.fetchSample(a, 0); this.currentDistance =
- * a[0] * 100; if (this.currentDistance > this.wantedDistance) {
- * Motor.B.forward(); Motor.C.forward(); } else if (this.currentDistance <
- * this.wantedDistance) { Motor.B.backward(); Motor.C.backward(); } else if
- * (this.currentDistance == this.wantedDistance) { Motor.B.stop();
- * Motor.C.stop(); DisplayCurrentSituation(); isUserDone = true; } }
- * 
- * ultra.close(); }
- * 
- * private void DisplayWantedDistance() { LCD.clearDisplay();
- * LCD.drawString("distance = " + this.wantedDistance + "cm", 1, 3); }
- * 
- * private void DisplayCurrentSituation() { LCD.clearDisplay();
- * LCD.drawString("wanted=" + this.wantedDistance + "cm", 1, 3);
- * LCD.drawString("current=" + this.currentDistance + "cm", 2, 3); } }
- */
 }	

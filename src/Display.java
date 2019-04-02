@@ -86,6 +86,12 @@ public class Display {
 		LCD.drawString(p3, 0, 5);
 	}
 	
+	public void ShowWorking() {
+		this.heading = "in progress";
+		LCD.drawString(heading, 0, 0);
+		LCD.drawString(line, 0, 1);
+	}
+	
 	public void ShowStart(int state) {
 		this.heading = "startscreen";
 		if (state == 0) {

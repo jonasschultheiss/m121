@@ -39,7 +39,45 @@ public class Display {
 	}
 	
 	public void ShowSettings (int state) {
-		
+		this.heading = "settings";
+		switch (state) {
+			case 0: {
+				this.p1 = "<mode>: " + this.settings.getMode();
+				this.p2 = "distance: " + this.settings.getWantedDistance();
+				this.p3 = "deviation: " + this.settings.getWantedDeviation();
+				break;
+			}
+			case 1: {
+				this.p1 = "mode: <" + this.settings.getMode() + ">";
+				this.p2 = "distance: " + this.settings.getWantedDistance();
+				this.p3 = "deviation: " + this.settings.getWantedDeviation();
+				break;
+			}
+			case 2: {
+				this.p1 = "mode: " + this.settings.getMode();
+				this.p2 = "<distance>: " + this.settings.getWantedDistance();
+				this.p3 = "deviation: " + this.settings.getWantedDeviation();
+				break;
+			}
+			case 3: {
+				this.p1 = "mode: " + this.settings.getMode();
+				this.p2 = "distance: <" + this.settings.getWantedDistance()+ ">";
+				this.p3 = "deviation: " + this.settings.getWantedDeviation();
+				break;
+			}
+			case 4: {
+				this.p1 = "mode: " + this.settings.getMode();
+				this.p2 = "distance: " + this.settings.getWantedDistance();
+				this.p3 = "<deviation>: " + this.settings.getWantedDeviation();
+				break;
+			}
+			case 5: {
+				this.p1 = "mode: " + this.settings.getMode();
+				this.p2 = "distance: " + this.settings.getWantedDistance();
+				this.p3 = "deviation: <" + this.settings.getWantedDeviation() + ">";
+				break;
+			}
+		}
 	}
 	
 	public void ShowStart(int state) {

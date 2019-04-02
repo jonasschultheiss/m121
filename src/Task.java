@@ -67,7 +67,99 @@ public class Task {
 	}
 	
 	private void StartSettings  () {
-		this.display.show
+		this.display.ClearScreen();
+		int state = 0;
+		boolean isUserDone = false;
+		do {
+			this.display.ClearScreen();
+			this.display.ShowSettings(state);
+			switch (state) {
+				case 0: {
+					switch (Button.waitForAnyPress()) {
+						case Button.ID_ESCAPE: {
+							isUserDone = true;
+							break;
+						}
+						case Button.ID_RIGHT: {
+							state = 1;
+							break;
+						}
+						case Button.ID_DOWN: {
+							state = 2;
+							break;
+						}
+					}
+					break;
+				}
+				case 1: {
+					switch (Button.waitForAnyPress()) {
+						case Button.ID_UP: {
+							this.settings.changeMode();
+							break;
+						}
+						case Button.ID_RIGHT: {
+							this.settings.changeMode();
+							break;
+						}
+						case Button.ID_DOWN: {
+							this.settings.changeMode();
+							break;
+						}
+						case Button.ID_LEFT: {
+							this.settings.changeMode();
+							break;
+						}
+						case Button.ID_ESCAPE: {
+							state = 0;
+							break;
+						}
+					}
+					break;
+				}
+				case 2: {
+					switch (Button.waitForAnyPress()) {
+						case Button.ID_ESCAPE: {
+							isUserDone = true;
+							break;
+						}
+						case Button.ID_RIGHT: {
+							state = 3;
+							break;
+						}
+						case Button.ID_DOWN: {
+							state = 4;
+							break;
+						}
+					}	
+					break;	
+				}
+				case 3: {
+
+					break;
+				}
+				case 4: {
+					switch (Button.waitForAnyPress()) {
+						case Button.ID_ESCAPE: {
+							isUserDone = true;
+							break;
+						}
+						case Button.ID_RIGHT: {
+							state = 5;
+							break;
+						}
+						case Button.ID_UP: {
+							state = 2;
+							break;
+						}
+					}
+					break;
+				}
+				case 5: {
+
+					break;
+				}
+			}
+		} while (!isUserDone);
 	}
 	
 	private void EndingSequence() {

@@ -1,37 +1,63 @@
 
 public class Settings {
-	private float MAX;
-	private float MIN;
+	private float MAX_DISTANCE;
+	private float MIN_DISTANCE;
 	private float WantedDistance;
 	private int Mode; // 0 = Stop direclty, 1 = wait x seconds
 	private int Volume;
-	private float MaxDeviation;
+	private float MAX_DEVIATION;
+	private float MIN_DEVIATION;
+	private float WantedDeviation;
 	private int HoldPositionTime;
 	
 	public Settings() {
-		this.MAX = 50;
-		this.MIN = 1;
+		this.MAX_DISTANCE = 50;
+		this.MIN_DISTANCE = 1;
 		this.WantedDistance = 10;
 		this.setMode(0);
 		this.Volume = 100;
-		this.setMaxDeviation(5.00f);
+		this.WantedDeviation = 5;
 		this.setHoldPositionTime(3);
 	}
 
 	public float getWantedDistance() {
 		return this.WantedDistance;
 	}
+	
+	public float getWantedDeviation() {
+		return this.WantedDeviation;
+	}
 
 	public void IncrementWantedDistance(float wantedDistance) {
-		if (this.WantedDistance < this.MAX) {
+		if (this.WantedDistance < this.MAX_DISTANCE) {
 			this.WantedDistance++;
 		}
 	}
 	
 	public void DecrementWantedDistance(float wantedDistance) {
-		if (this.WantedDistance > this.MIN) {
+		if (this.WantedDistance > this.MIN_DISTANCE) {
 			this.WantedDistance--;
 		}	
+	}
+	
+	public void IncrementWantedDeviation(float wantedDeviation) {
+		if (this.WantedDeviation < this.MAX_DEVIATION) {
+			this.WantedDeviation++;
+		}
+	}
+	
+	public void DecrementWantedDeviation(float wantedDeviation) {
+		if (this.WantedDeviation > this.MIN_DEVIATION) {
+			this.WantedDeviation--;
+		}	
+	}
+	
+	public void changeMode() {
+		if (this.Mode == 0) {
+			this.Mode = 1;
+		} else {
+			this.Mode = 0;
+		}
 	}
 
 	public int getVolume() {
@@ -48,14 +74,6 @@ public class Settings {
 
 	public void setMode(int mode) {
 		this.Mode = mode;
-	}
-
-	public float getMaxDeviation() {
-		return this.MaxDeviation;
-	}
-
-	public void setMaxDeviation(float maxDeviation) {
-		this.MaxDeviation = maxDeviation;
 	}
 
 	public int getHoldPositionTime() {

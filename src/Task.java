@@ -2,11 +2,6 @@ import java.util.concurrent.TimeUnit;
 
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
-import lejos.hardware.motor.Motor;
-import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.EV3UltrasonicSensor; 
-import lejos.robotics.SampleProvider;
 
 public class Task {
 
@@ -67,6 +62,7 @@ public class Task {
 	}
 	
 	private void StartSettings  () {
+		Button.LEDPattern(4);
 		this.display.ClearScreen();
 		int state = 0;
 		boolean isUserDone = false;
@@ -113,6 +109,10 @@ public class Task {
 							state = 0;
 							break;
 						}
+						case Button.ID_ENTER: {
+							state = 0;
+							break;
+						}
 					}
 					break;
 				}
@@ -134,7 +134,32 @@ public class Task {
 					break;	
 				}
 				case 3: {
-
+					switch (Button.waitForAnyPress()) {
+						case Button.ID_UP: {
+							this.settings.IncrementWantedDistance();
+							break;
+						}
+						case Button.ID_RIGHT: {
+							this.settings.IncrementWantedDistance();
+							break;
+						}
+						case Button.ID_DOWN: {
+							this.settings.DecrementWantedDistance();
+							break;
+						}
+						case Button.ID_LEFT: {
+							this.settings.DecrementWantedDistance();
+							break;
+						}
+						case Button.ID_ESCAPE: {
+							state = 2;
+							break;
+						}
+						case Button.ID_ENTER: {
+							state = 2;
+							break;
+						}
+					}
 					break;
 				}
 				case 4: {
@@ -155,7 +180,32 @@ public class Task {
 					break;
 				}
 				case 5: {
-
+					switch (Button.waitForAnyPress()) {
+						case Button.ID_UP: {
+							this.settings.IncrementWantedDeviation();
+							break;
+						}
+						case Button.ID_RIGHT: {
+							this.settings.IncrementWantedDeviation();
+							break;
+						}
+						case Button.ID_DOWN: {
+							this.settings.DecrementWantedDeviation();
+							break;
+						}
+						case Button.ID_LEFT: {
+							this.settings.DecrementWantedDeviation();
+							break;
+						}
+						case Button.ID_ESCAPE: {
+							state = 4;
+							break;
+						}
+						case Button.ID_ENTER: {
+							state = 4;
+							break;
+						}
+					}
 					break;
 				}
 			}

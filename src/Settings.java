@@ -28,25 +28,25 @@ public class Settings {
 		return this.WantedDeviation;
 	}
 
-	public void IncrementWantedDistance(float wantedDistance) {
+	public void IncrementWantedDistance() {
 		if (this.WantedDistance < this.MAX_DISTANCE) {
 			this.WantedDistance++;
 		}
 	}
 	
-	public void DecrementWantedDistance(float wantedDistance) {
+	public void DecrementWantedDistance() {
 		if (this.WantedDistance > this.MIN_DISTANCE) {
 			this.WantedDistance--;
 		}	
 	}
 	
-	public void IncrementWantedDeviation(float wantedDeviation) {
+	public void IncrementWantedDeviation() {
 		if (this.WantedDeviation < this.MAX_DEVIATION) {
 			this.WantedDeviation++;
 		}
 	}
 	
-	public void DecrementWantedDeviation(float wantedDeviation) {
+	public void DecrementWantedDeviation() {
 		if (this.WantedDeviation > this.MIN_DEVIATION) {
 			this.WantedDeviation--;
 		}	

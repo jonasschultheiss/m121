@@ -49,7 +49,7 @@ public class Task {
 			@Override
 			public void keyReleased(Key k) {}
 		});
-		//
+		
 		CreateMovePilot();
 		EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
 		ultra.enable();
@@ -60,6 +60,7 @@ public class Task {
 			if (Math.signum(difference) == 1.0f) {
 				if (AreCriteriasMet(difference)) {
 					this.pilot.Stop();
+					
 				} else {
 					this.pilot.Forwards();
 				}
@@ -75,7 +76,7 @@ public class Task {
 		
 		this.pilot.Stop();
 		ultra.close();
-		//
+	
 	}
 	
 	private void ModeOne () {
@@ -132,6 +133,7 @@ public class Task {
 	
 	private void StartupSequence() {
 		this.display.ShowStartup();
+		Button.LEDPattern(1);
 		PlayStartHymn(settings.getVolume());
 		// Sleep();
 		GetUserInput();
@@ -170,7 +172,7 @@ public class Task {
 	}
 	
 	private void StartSettings  () {
-		Button.LEDPattern(2);
+		Button.LEDPattern(4);
 		int state = 0;
 		boolean isUserDone = false;
 		do {
@@ -321,7 +323,7 @@ public class Task {
 				}
 			}
 		} while (!isUserDone);
-		Button.LEDPattern(0);
+		Button.LEDPattern(1);
 	}
 	
 	private void EndingSequence() {

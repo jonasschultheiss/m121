@@ -1,15 +1,12 @@
 import java.util.concurrent.TimeUnit;
 
 import lejos.hardware.Button;
+import lejos.hardware.Key;
+import lejos.hardware.KeyListener;
 import lejos.hardware.Sound;
-import lejos.hardware.motor.Motor;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
-import lejos.robotics.chassis.Chassis;
-import lejos.robotics.chassis.Wheel;
-import lejos.robotics.chassis.WheeledChassis;
-import lejos.robotics.navigation.*;
 
 public class Task {
 
@@ -17,13 +14,14 @@ public class Task {
 	
 	private Settings settings;
 	
-	private MovePilot pilot;
+	private CustomPilot pilot;
 	
-	private float currentDistance = 0.00f;
+	public static boolean isUserDone;
 	
 	public Task() {
 		this.settings = new Settings();
 		this.display = new Display(this.settings);
+		isUserDone = false;
 	}
 	
 	public void Start() {
@@ -36,57 +34,106 @@ public class Task {
 		if (this.settings.getMode() == 0) {
 			ModeZero();
 		} else {
-			// Don mode 2
+			ModeOne();
 		}
 	}
 	
 	private void ModeZero () {
+		Button.ENTER.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(Key k) {
+				isUserDone = true;
+			}
+
+			@Override
+			public void keyReleased(Key k) {}
+		});
+		//
 		CreateMovePilot();
-		boolean isTravelingForward = false;
+		EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
+		ultra.enable();
+		
+		do {
+			float currentDistance = GetCurrentDistance(ultra);
+			float difference = this.settings.getWantedDistance() - currentDistance;
+			if (Math.signum(difference) == 1.0f) {
+				if (AreCriteriasMet(difference)) {
+					this.pilot.Stop();
+				} else {
+					this.pilot.Forwards();
+				}
+			} else {
+				if (AreCriteriasMet(difference)) {
+					this.pilot.Stop();
+				} else {
+					this.pilot.Backwards();
+				}
+			}
+			
+		} while (!isUserDone);
+		
+		this.pilot.Stop();
+		ultra.close();
+		//
+	}
+	
+	private void ModeOne () {
+		CreateMovePilot();
 		boolean isGoalAnchieved = false;
 		EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
 		ultra.enable();
 		
 		do {
-			if (Math.signum((double)GetCurrentDistance(ultra))) {
-				
+			float currentDistance = GetCurrentDistance(ultra);
+			float difference = this.settings.getWantedDistance() - currentDistance;
+			if (Math.signum(difference) == 1.0f) {
+				if (AreCriteriasMet(difference)) {
+					isGoalAnchieved = true;
+				} else {
+					this.pilot.Forwards();
+				}
+			} else {
+				if (AreCriteriasMet(difference)) {
+					isGoalAnchieved = true;
+				} else {
+					this.pilot.Backwards();
+				}
 			}
-			
 			
 		} while (!isGoalAnchieved);
 		
-		
-		this.pilot.setLinearSpeed(90);
-		this.pilot.setLinearAcceleration(25);
-		this.pilot.travel(20000);
-		Sleep();
-		this.pilot.travel(-20000);
-		Sleep();
-		this.pilot.stop();
+		this.pilot.Stop();
+		ultra.close();
 	}
 	
-	private void ModeOne () {
+	private boolean AreCriteriasMet(float difference) {
+		if (Math.signum(difference) != 1) {
+			difference = Math.abs(difference);
+		}
 		
+		if (difference <= this.settings.getWantedDeviation()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private float GetCurrentDistance(EV3UltrasonicSensor ultra) {
 		SampleProvider sample = ultra.getDistanceMode();
-		float[] a = new float[99]; 
+		float[] a = new float[1]; 
 		sample.fetchSample(a, 0); 
 		return (a[0] * 100);
 	}
 	
 	private void CreateMovePilot () {
-		Wheel leftWheel = WheeledChassis.modelWheel(Motor.B, 42.2).offset(72).gearRatio(2);
-		Wheel rightWheel = WheeledChassis.modelWheel(Motor.C, 42.2).offset(-72).gearRatio(2);
-		Chassis chassis = new WheeledChassis( new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
-		this.pilot = new MovePilot(chassis);
+		this.pilot = new CustomPilot();
 	}
 	
 	private void StartupSequence() {
 		this.display.ShowStartup();
 		PlayStartHymn(settings.getVolume());
-		Sleep();
+		// Sleep();
 		GetUserInput();
 	}
 	

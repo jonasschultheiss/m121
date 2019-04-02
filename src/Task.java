@@ -2,12 +2,24 @@ import java.util.concurrent.TimeUnit;
 
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.*;
 
 public class Task {
 
 	private Display display;
 	
 	private Settings settings;
+	
+	private MovePilot pilot;
+	
+	private float currentDistance = 0.00f;
 	
 	public Task() {
 		this.settings = new Settings();
@@ -16,10 +28,59 @@ public class Task {
 	
 	public void Start() {
 		StartupSequence();
-		
-		// Do stuff
-		
+		DoStuff();
 		EndingSequence();
+	}
+	
+	private void DoStuff() {
+		if (this.settings.getMode() == 0) {
+			ModeZero();
+		} else {
+			// Don mode 2
+		}
+	}
+	
+	private void ModeZero () {
+		CreateMovePilot();
+		boolean isTravelingForward = false;
+		boolean isGoalAnchieved = false;
+		EV3UltrasonicSensor ultra = new EV3UltrasonicSensor(SensorPort.S4);
+		ultra.enable();
+		
+		do {
+			if (Math.signum((double)GetCurrentDistance(ultra))) {
+				
+			}
+			
+			
+		} while (!isGoalAnchieved);
+		
+		
+		this.pilot.setLinearSpeed(90);
+		this.pilot.setLinearAcceleration(25);
+		this.pilot.travel(20000);
+		Sleep();
+		this.pilot.travel(-20000);
+		Sleep();
+		this.pilot.stop();
+	}
+	
+	private void ModeOne () {
+		
+	}
+	
+	private float GetCurrentDistance(EV3UltrasonicSensor ultra) {
+		SampleProvider sample = ultra.getDistanceMode();
+		float[] a = new float[99]; 
+		sample.fetchSample(a, 0); 
+		return (a[0] * 100);
+	}
+	
+	private void CreateMovePilot () {
+		Wheel leftWheel = WheeledChassis.modelWheel(Motor.B, 42.2).offset(72).gearRatio(2);
+		Wheel rightWheel = WheeledChassis.modelWheel(Motor.C, 42.2).offset(-72).gearRatio(2);
+		Chassis chassis = new WheeledChassis( new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
+		this.pilot = new MovePilot(chassis);
 	}
 	
 	private void StartupSequence() {
@@ -62,8 +123,7 @@ public class Task {
 	}
 	
 	private void StartSettings  () {
-		Button.LEDPattern(4);
-		this.display.ClearScreen();
+		Button.LEDPattern(2);
 		int state = 0;
 		boolean isUserDone = false;
 		do {
@@ -76,7 +136,7 @@ public class Task {
 							isUserDone = true;
 							break;
 						}
-						case Button.ID_RIGHT: {
+						case Button.ID_ENTER: {
 							state = 1;
 							break;
 						}
@@ -122,12 +182,16 @@ public class Task {
 							isUserDone = true;
 							break;
 						}
-						case Button.ID_RIGHT: {
+						case Button.ID_ENTER: {
 							state = 3;
 							break;
 						}
 						case Button.ID_DOWN: {
 							state = 4;
+							break;
+						}
+						case Button.ID_UP: {
+							state = 0;
 							break;
 						}
 					}	
@@ -168,7 +232,7 @@ public class Task {
 							isUserDone = true;
 							break;
 						}
-						case Button.ID_RIGHT: {
+						case Button.ID_ENTER: {
 							state = 5;
 							break;
 						}
@@ -210,6 +274,7 @@ public class Task {
 				}
 			}
 		} while (!isUserDone);
+		Button.LEDPattern(0);
 	}
 	
 	private void EndingSequence() {

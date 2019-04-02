@@ -78,6 +78,12 @@ public class Display {
 				break;
 			}
 		}
+		
+		LCD.drawString(heading, 0, 0);
+		LCD.drawString(line, 0, 1);
+		LCD.drawString(p1, 0, 3);
+		LCD.drawString(p2, 0, 4);
+		LCD.drawString(p3, 0, 5);
 	}
 	
 	public void ShowStart(int state) {

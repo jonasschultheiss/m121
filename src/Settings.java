@@ -13,10 +13,12 @@ public class Settings {
 	public Settings() {
 		this.MAX_DISTANCE = 50;
 		this.MIN_DISTANCE = 1;
+		this.MAX_DEVIATION = 5;
+		this.MIN_DEVIATION = 1;
 		this.WantedDistance = 10;
 		this.setMode(0);
-		this.Volume = 100;
-		this.WantedDeviation = 5;
+		this.Volume = 5;
+		this.WantedDeviation = 2;
 		this.setHoldPositionTime(3);
 	}
 

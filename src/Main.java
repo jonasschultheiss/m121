@@ -3,14 +3,13 @@ import lejos.hardware.Button;
 public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
-		// StartApplication();
-		Debug();
+		StartApplication();
+		// Debug();
 	}
 	
 	private static void Debug() {
 		Display display = new Display();
-		display.ShowStartScreen();
-
+		display.ShowStartup();
 		Button.waitForAnyPress();
 		
 	}

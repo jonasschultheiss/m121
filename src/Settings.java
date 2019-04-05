@@ -17,7 +17,7 @@ public class Settings {
 		this.MIN_DEVIATION = 1;
 		this.WantedDistance = 10;
 		this.setMode(0);
-		this.Volume = 5;
+		this.Volume = 100;
 		this.WantedDeviation = 2;
 		this.setHoldPositionTime(3);
 	}
